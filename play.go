@@ -7,9 +7,13 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"github.com/kr/pretty"
+	"github.com/spf13/viper"
 )
 
 func main() {
+	viper.SetConfigName("config")
+	viper.ReadInConfig()
+
 	go forever()
 	select {}
 }
@@ -18,7 +22,7 @@ func forever() {
 	client := &http.Client{}
 
 	req, _ := http.NewRequest("GET", "https://forumhouse.zendesk.com/api/v2/search.json?query=status<solved+tags:hr", nil)
-	req.SetBasicAuth("projects@forumhouse.ru/token", "py9in1GRCopEw5QgRlHg23qx2rlJ3jZXJxXlEK2L")
+	req.SetBasicAuth(viper.GetString("login"), viper.GetString("password"))
 
 	for {	
 		resp, _ := client.Do(req)
